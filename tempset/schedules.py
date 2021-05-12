@@ -2,6 +2,8 @@ import json
 import os
 import pandas as pd
 
+import pkg_resources
+
 import numpy as np
 from eppy.modeleditor import IDF
 
@@ -12,6 +14,7 @@ class Setpoint_Schedule:
     def __init__(self,
                  schedule_params,
                  fig_dir = '../figures/',
+                 idd_file=None,
                  **kwargs):
         """
         Constructs necessary attributes for a setpoint schedule object
@@ -22,10 +25,10 @@ class Setpoint_Schedule:
         You can add eplus_param as an additional argument eplus_param
         """
 
-        #get arguments
+        # get arguments
         self.fig_dir = fig_dir
 
-        #create fig directory if not exists
+        # create fig directory if not exists
         if not os.path.exists(self.fig_dir):
             os.makedirs(self.fig_dir)
 
@@ -36,11 +39,16 @@ class Setpoint_Schedule:
             self.set_eplus_config()
 
         # set  IDD
-        self.idd_file = self.eplus_param["idd_file"]
+        if idd_file is None:
+            self.idd_file = pkg_resources.resource_filename('tempset', 'data/eplus/Energy+.idd')
+        else:
+            self.idd_file = idd_file
+        # self.idd_file = self.eplus_param["idd_file"]
         IDF.setiddname(self.idd_file)
 
         # import IDF and extract all the scedules
-        idf_1 = IDF(idfname=self.eplus_param["idf_file"])
+        idf_1 = IDF(idfname=pkg_resources.resource_filename('tempset', 'data/idf/gas.idf'))
+        # idf_1 = IDF(idfname=self.eplus_param["idf_file"])
         AllSchedComapcts = idf_1.idfobjects["Schedule:Compact"]
 
         # get params from json'
@@ -52,9 +60,14 @@ class Setpoint_Schedule:
         # write new schedule to file'
         self.write_to_idf(
             edited_schedule=self.mod_schedule,
-            idf_file=self.eplus_param["idf_file"],
+            idf_file=pkg_resources.resource_filename('tempset', 'data/idf/gas.idf'),
             new_file=self.eplus_param["mod_file"],
         )
+        # self.write_to_idf(
+        #     edited_schedule=self.mod_schedule,
+        #     idf_file=self.eplus_param["idf_file"],
+        #     new_file=self.eplus_param["mod_file"],
+        # )
 
     def get_schparams_from_json(self, schedule_params):
         """

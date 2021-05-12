@@ -1,30 +1,65 @@
 import pandas as pd
 import json
 import os
+import time
+
+import pkg_resources
+import logging
 
 from joblib import Parallel, delayed
 
-from schedules import Setpoint_Schedule
+from tempset.logger import Logger
+from tempset.schedules import Setpoint_Schedule
 
 
-class BatchIdf:
-    def __init__(self, eplus_config, param_json, batch_param):
+class BatchIdf(Logger):
+    def __init__(self, eplus_config, param_json, batch_param, htgsetpoint_params_csv_output=None, output_dir=None,
+                 write_logfile=False, idf_file=None, idd_file=None):
         """
         :param eplus_config: str-> json file containing eplus config info (idd_name, idf_name, name for new_idf
         :param param_json: str-> json file containing arams needed to generate stochastic schedules
         :param batch_param: str-> json file containing params associated with generating batches of IDFs
         """
+        # start time for model run
+        self.start_time = time.time()
+
+        self.logfile = os.path.join(output_dir, f'tempset_logfile_{self.start_time}.log')
+        self.write_logfile = write_logfile
+
+        # initialize console handler for logger
+        self.console_handler()
+
+        if self.write_logfile:
+            self.file_handler()
+
+        logging.info('Starting batch processing of IDF files')
+
+        # inherit logger class attributes
+        super(BatchIdf, self).__init__(self.write_logfile, self.logfile)
+
+        self.csv_file = htgsetpoint_params_csv_output
+        self.new_dir = output_dir
 
         with open(eplus_config) as j1, open(param_json) as j2, open(batch_param) as j3:
             self.eplus_param = json.load(j1)
             self.param_json = json.load(j2)
             self.batch_param = json.load(j3)
 
-        self.idf_file = self.eplus_param["idf_file"]
+        if idf_file is None:
+            self.idf_file = pkg_resources.resource_filename('tempset', 'data/idf/gas.idf')
+        else:
+            self.idf_file = idf_file
+
+        # self.idf_file = self.eplus_param["idf_file"]
+
+        self.idd_file = idd_file
+
         # get batch param'
         self.get_batch_param(batch_param=self.batch_param)
+
         # create directory'
         self.create_new_dir()
+
         # create idfs in parallel'
         self.execute_in_parallel()
 
@@ -35,10 +70,12 @@ class BatchIdf:
         """
 
         self.max_iter = batch_param["max_iter"]
-        self.csv_file = batch_param["csv_file"]
-        self.new_dir = batch_param[
-            "new_dir"
-        ]  # name of directory where the idfs will be moved
+        # self.csv_file = batch_param["csv_file"]
+
+        # self.new_dir = batch_param[
+        #     "new_dir"
+        # ]  # name of directory where the idfs will be moved
+
         self.n_jobs = batch_param["n_jobs"]
 
         return None
@@ -89,8 +126,11 @@ class BatchIdf:
         "Move file to directory -> self.new_dir"
         new_str = new_file.split("/")[-1]  # get the last string
 
-        new_path = "./" + self.new_dir + "/" + new_str
+        new_path = os.path.join(self.new_dir, new_str)
+        # new_path = "./" + self.new_dir + "/" + new_str
         os.replace(new_file, new_path)
+
+        logging.info(f"Created file:  {new_path}")
 
         return df
 
@@ -101,7 +141,7 @@ class BatchIdf:
         :return Sch_obj.df: dataframe corresponding containing schedule parameter for one single schedule
         """
         self.eplus_param['mod_file'] = new_filename
-        Sch_obj = Setpoint_Schedule(schedule_params=self.param_json, eplus_param=self.eplus_param)
+        Sch_obj = Setpoint_Schedule(schedule_params=self.param_json, eplus_param=self.eplus_param, idd_file=self.idd_file)
 
         return Sch_obj.df
 
@@ -119,6 +159,25 @@ class BatchIdf:
         df_schParam.to_csv(self.csv_file)
 
         return None
+
+
+def batch_process_idf(eplus_config, param_json, batch_param, htgsetpoint_params_csv_output=None, output_dir=None,
+                      write_logfile=False, idf_file=None):
+    """Batch process IDF files.
+
+    :param eplus_config: str-> json file containing eplus config info (idd_name, idf_name, name for new_idf
+    :param param_json: str-> json file containing arams needed to generate stochastic schedules
+    :param batch_param: str-> json file containing params associated with generating batches of IDFs
+
+    """
+
+    BatchIdf(eplus_config=eplus_config,
+             param_json=param_json,
+             batch_param=batch_param,
+             htgsetpoint_params_csv_output=htgsetpoint_params_csv_output,
+             output_dir=output_dir,
+             write_logfile=write_logfile,
+             idf_file=idf_file)
 
 
 if __name__ == "__main__":

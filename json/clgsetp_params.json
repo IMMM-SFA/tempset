@@ -22,14 +22,11 @@
 		"min": 6,
 		"max": 18
 	},
-	
-	
+
 	"p_threshSetback": 0.01,
 	"p_threshRamp": 0.01,
 	"setback_p": 0.772,
 	
 	"plot_base_schedule": false,
 	"plot_mod_schedule": false
-	
-	
 }
