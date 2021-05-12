@@ -1,0 +1,33 @@
+{
+	"schedule_name": "HTGSETP_SCH_NO_OPTIMUM",
+	"schedule_type": "HTGSETP",
+	"timeRes": 1,
+	"days_in_week": ["WeekDays"],
+	"max_setbackhour": 4,
+	"max_ramphour": 3, 
+	"rampRes": 15,
+	"rampRate_min": 0.5,
+	"heatingSETP_occ": {
+		"min": 17.0,
+		"max": 23.5,
+		"mean": 21.0		
+	},
+	
+	"heatingSETP_unocc": {
+		"min": 14.0,
+		"max": 23.0	
+	},
+	
+	"occupied_times":{
+		"min": 6,
+		"max": 19
+	},
+	
+	"p_threshSetback": 0.01,
+	"p_threshRamp": 0.01,
+	"setback_p": 0.772,
+	
+	"plot_base_schedule": true,
+	"plot_mod_schedule": false
+		
+}

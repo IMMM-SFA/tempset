@@ -47,7 +47,7 @@ eplustbl.csv/
 in.epw/
 output.txt/
 prototype_htg/
-tempset/
+#tempset/
 # project
 *.pyc
 build/
