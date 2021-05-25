@@ -9,7 +9,7 @@ You can install `im3py` by running the following from your cloned directory (NOT
 
 `pip3 install git+https://https://github.com/IMMM-SFA/tempset --user`
 
-### Step 2tem:
+### Step 2:
 Confirm that the module and its dependencies have been installed by running from your prompt:
 
 ```python
@@ -28,13 +28,12 @@ See examples below for how to pass into the `Model` class
 
 | Argument | Type | Description |
 |----|----|----|
-| `eplus_config` | str | Full path to configuration JSON file with file name and extension. The user needs to specify the IDD and the source IDF from which temperature schedules will be stochastically generated |
-| `param_json` | str| Full path with file name and extension to the JSON file where the parameters associated with the heating setpoint are specified. 
-| `start_step` | int | Start time step value. |
-| `through_step` | int | Through time step value. |
-| `time_step` | int | Number of steps (e.g. number of years or minutes between projections) |
-| `alpha_param` | float | Alpha parameter for model.  Acceptable range:  -2.0 to 2.0 |
-| `beta_param` | float | Beta parameter for model.  Acceptable range:  -2.0 to 2.0 |
+| `eplus_config` | str | Full path to configuration JSON file with file name and extension. The user needs to specify the IDD file corresponding to the IDF. Default: `data/eplus/Energy+.idd` |
+| `param_json` | str| Full path with file name and extension to the JSON file where the parameters associated with the heating or cooling setpoint are specified. Details on this later in the manual. Example: `/json/htgsetp_params.json`.
+| `batch_param` | str | Full path with file name and extension to the JSON file where the parameters associated with getting a batch of setpoint schedules. |
+| `htgsetpoint_params_csv_output` | str | Full path with fie name and extension where the output CSV keeping track of the schedule parameters are going to be stored. Default set to None. |
+| `output_dir` | str | Full path to directory where the generated IDFs with stochastic schedules are going to be stored |
+| `idf_file` | str | Full path with filename and extension to source IDFs from which new IDFs are to be generated. Default: `data\idf\gas.idf`. |
 | `write_logfile` | bool | Optional, choose to write log as file. |
 
 ### Variable arguments
