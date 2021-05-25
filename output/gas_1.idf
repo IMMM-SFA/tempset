@@ -1733,26 +1733,32 @@ Schedule:Compact,
     Temperature,              !- Schedule Type Limits Name
     Through: 12/31,           !- Field 1
     For: WeekDays,            !- Field 2
-    Until: 24:00,             !- Field 3
-    21.0,                     !- Field 4
-    For: Weekends,            !- Field 5
-    Until: 24:00,             !- Field 6
-    15.56,                    !- Field 7
-    For: Holiday,             !- Field 8
+    Until: 06:14,             !- Field 3
+    15.5,                     !- Field 4
+    Until: 06:29,             !- Field 5
+    18.0,                     !- Field 6
+    Until: 19:00,             !- Field 7
+    20.5,                     !- Field 8
     Until: 24:00,             !- Field 9
-    15.56,                    !- Field 10
-    For: WinterDesignDay,     !- Field 11
+    15.5,                     !- Field 10
+    For: Weekends,            !- Field 11
     Until: 24:00,             !- Field 12
-    23.0,                     !- Field 13
-    For: SummerDesignDay,     !- Field 14
+    15.56,                    !- Field 13
+    For: Holiday,             !- Field 14
     Until: 24:00,             !- Field 15
     15.56,                    !- Field 16
-    For: CustomDay1,          !- Field 17
+    For: WinterDesignDay,     !- Field 17
     Until: 24:00,             !- Field 18
-    15.56,                    !- Field 19
-    For: CustomDay2,          !- Field 20
+    23.0,                     !- Field 19
+    For: SummerDesignDay,     !- Field 20
     Until: 24:00,             !- Field 21
-    15.56;                    !- Field 22
+    15.56,                    !- Field 22
+    For: CustomDay1,          !- Field 23
+    Until: 24:00,             !- Field 24
+    15.56,                    !- Field 25
+    For: CustomDay2,          !- Field 26
+    Until: 24:00,             !- Field 27
+    15.56;                    !- Field 28
 
 Material,
     Std Wood 6inch,           !- Name

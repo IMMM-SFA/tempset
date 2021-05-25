@@ -1733,12 +1733,12 @@ Schedule:Compact,
     Temperature,              !- Schedule Type Limits Name
     Through: 12/31,           !- Field 1
     For: WeekDays,            !- Field 2
-    Until: 05:30,             !- Field 3
-    15.5,                     !- Field 4
+    Until: 05:00,             !- Field 3
+    16.5,                     !- Field 4
     Until: 19:00,             !- Field 5
-    21.5,                     !- Field 6
+    20.5,                     !- Field 6
     Until: 24:00,             !- Field 7
-    15.5,                     !- Field 8
+    16.5,                     !- Field 8
     For: Weekends,            !- Field 9
     Until: 24:00,             !- Field 10
     15.56,                    !- Field 11
