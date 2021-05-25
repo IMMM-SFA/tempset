@@ -1,7 +1,7 @@
 # tempset
 BEND temperature set point SA study
 
-## Getting Started Using the `im3py` Package
+## Getting Started Using the `tempset` Package
 The `tempset` package has been verified for **Python 3.7** and up.
 
 ### Step 1:
