@@ -48,14 +48,18 @@ The user inputs to define parameters for generating stochastic schedules need to
 | `schedule_type` | str| Type of schedule. Must be HTGSETP (for heating setpoint) or CLGSETP (cooling setpoint)|
 | `days in week` | list | Days in week for which schedules need to be changed. |
 | `t_pthresh` | int | Threshold duration in hours for pre-heating or pre-cooling of generated schedules [(t_p,thres) in paper]|
-| `max_ramphour` | int | Maximum duration in hours for ramping. |
+| `max_ramphour` | int | Threshold duration in hours for morning rampup. (t_{ramp,thresh} in paper)|
 | `rampRes` | int | time interval in minutes over which temperatures are incremented. Suggested: 15 mins. |
 | `gamma_thresh` | float | Threshold morning ramp-up rate, in C/min for morning rampup. |
 | `htgsSETP_op`| dict | Temperature parameters when heating is in "operation", i.e. when the daily temperature is at the maximum value during 24 hours. Keys "min", "max" and "mean" temperatures correspond to minimum, maximum  and mean temperratures from which the operative temperature T_{op} will be generated. Only valid when `schedule_type == HTGSETP`|
 | `htgSETP_setbacl`| dict | Temperature parameters when heating is in "setback", i.e. when the daily temperature is at the maximum value during 24 hours. Only valid when `schedule_type == HTGSETP`|
 | `clgSETP_op`| dict | Similar to `htgSETP_op`, but for cooling setpoints. Only valid when `schedule_type == CLGSETP`|
 | `clgSETP_setback`| dict | Similar to `htgSETP_setback`, but for cooling setpoints. Only valid when `schedule_type == CLGSETP`|
-| `p_threshSetback`| float | Similar to `htgSETP_setback`, but for cooling setpoints. Only valid when `schedule_type == CLGSETP`|
+| `p_tp`| float | Confidence interval assocated with `t_pthresh`. For instance, a value of 0.01 corresponds to 99% of generated scheduules having t_p <= t_{p,thresh}|
+| `p_threshRamp`| float | Confidence interval assocated with `max_ramohour`|
+| `setback_p`| float | Probability with which a given schedule will have a setback. |
+| `plot_base_schedule`| false | Bool indicating whether to plot the base (i.e. source) schedule |
+| `plot_mod_schedule`| false | Bool indicating whether to plot the stochastically-generated schedule. Use it for troubleshooting when running `schedules.py` as standalone|
 
 ### Variable arguments
 Users can update variable argument values after model initialization; this includes updating values between time steps (see **Example 3**).  The following are variable arguments:
