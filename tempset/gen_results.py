@@ -5,17 +5,11 @@ import calendar
 
 import holidays
 
-import statutils
+#import statutils
 
 
 import matplotlib.pyplot as plt
 
-plt.rcParams.update({"font.size": 16})
-
-
-YEAR = 2017
-convert_kwh_to_kBtu = 3.412
-convert_J_to_kWh = 2.777e-7
 
 
 class results:
@@ -26,6 +20,7 @@ class results:
         case_study="I",
         fig_dir="../figures/prob_dist",
         fig_ext=".svg",
+        out_dir=None
     ):
 
         # get values from arguments
@@ -34,6 +29,10 @@ class results:
         self.case_study = case_study
         self.fig_dir = fig_dir
         self.fig_ext = fig_ext
+        self.out_dir = out_dir
+
+        plt.rcParams.update({"font.size": 16})
+        self.year = 2017
 
         if case_study == "I":
             self.months_to_simulate = [
@@ -74,6 +73,10 @@ class results:
 
         if not os.path.exists(self.fig_dir):
             os.makedirs(self.fig_dir)
+
+        #create directory
+        if self.out_dir is not None and not os.path.exists(self.out_dir):
+            os.makedirs(self.out_dir)
 
         self.df, self.df_month, self.df_param = self.read_csv()
         self.prob_distributions()
@@ -169,6 +172,7 @@ class results:
 
         # parse data
         df_list_1, df_list_2 = self.parse_data()
+        df_out = [] #empty list to append df
 
         # for each month, we can compute a probability distribution
         for m, (df_1, df_2) in enumerate(zip(df_list_1, df_list_2)):
@@ -230,49 +234,25 @@ class results:
                     title=month,
                 )  # ylim = [0, 1.30]
 
-                "Get Results of statistical Tests"
-                print("-----------------------NEW MONTH---------------------- ")
-                print("month: {}".format(month))
-                print(
-                    "The p-value (Total Electricity) for {} is {}".format(
-                        calendar.month_name[m + 1],
-                        statutils.non_parametric(df_e1, df_e2),
-                    )
-                )
-                print(
-                    "The p-value (Peak Demand) for {} is {}".format(
-                        calendar.month_name[m + 1],
-                        statutils.non_parametric(df_p1, df_p2),
-                    )
-                )
-                print(
-                    "The p-value (TC) for {} is {}".format(
-                        calendar.month_name[m + 1],
-                        statutils.non_parametric(df_tc1, df_tc2),
-                    )
-                )
+                ##export to a csv
+                data = {
+                    'Month': [calendar.month_name[m + 1]],
+                    'Median y1 (modified)': [df_e1.median()],
+                    'Median y1 (baseline)': [df_e2.median()],
+                    'Median y2 (modified)': [df_p1.median()],
+                    'Median y2 (baseline)': [df_p2.median()],
+                    'Median y3 (modified)': [df_tc1.median()],
+                    'Median y3 (baseline)': [df_tc2.median()],
+                    'Delta y1': [(df_e1.median() - df_e2.median()) / (df_e2.median())],
+                    'Delta y2': [(df_p1.median() - df_p2.median()) / (df_p2.median())],
+                    'Delta y3': [df_tc1.median() - df_tc2.median()]
+                }
 
-                print(
-                    "The median values (Total Electricity) for {} are {}, {}".format(
-                        calendar.month_name[m + 1], df_e1.median(), df_e2.median()
-                    )
-                )
-                print("The median values(Peak Demand) for {} are {}, {}".format(
-                    calendar.month_name[m + 1], df_p1.median(), df_p2.median()))
-                print(
-                    "The median values (thermal comfort) are {} is {}, {}".format(
-                        calendar.month_name[m + 1], df_tc1.median(), df_tc2.median()
-                    )
-                )
+                df_out.append(pd.DataFrame(data))
+        df = (pd.concat(df_out)).reset_index(drop=True)
 
-                print("----CHange in medians-----")
-                print(
-                    "Total Daily: ",
-                    (df_e1.median() - df_e2.median()) / (df_e2.median()),
-                )
-                print("Peak Daily: ",
-                      (df_p1.median() - df_p2.median()) / (df_p2.median()))
-                print("TC mean: ", df_tc1.median() - df_tc2.median())
+        if self.out_dir is not None:
+            df.to_csv(os.path.join(self.out_dir, 'case_study_{}_results.csv'.format(self.case_study)))
 
         return None
 
@@ -373,7 +353,7 @@ def remove_design_day(df):
     return df_o
 
 
-def remove_federal_holidays(df, year=YEAR):
+def remove_federal_holidays(df, year=2017):
     """
 
     :param df: input dataframe
@@ -395,14 +375,35 @@ def remove_federal_holidays(df, year=YEAR):
     return df
 
 
-def test_function():
+
+def analyze_results(summary_file,
+                    param_file,
+                    case_study,
+                    fig_dir,
+                    fig_ext,
+                    out_dir=None):
+
+    """
+    wrapper for method results
+    :param summary_file: str -> file(csv) containing the summary of y1, y2 and y3 on a per-day basis
+    :param param_file: str -> file(csv) containing the schedule parameters generated through batchprocess.py
+    :param case_study: str -> indicates which case study to perform. currently 'I', 'IIA', 'IIB' and 'III' supported
+    :param fig_dir: str -> directory where to save the figures
+    :param fig_ext: str -> format of figures to generate. currently only .eps and .svg have been verified
+    :return:
+    """
+
+
     results(
-        summary_file="../data/electric/summary.csv",
-        param_file="../data/electric/htgsetp_params_electric.csv",
-        case_study="I",
-        fig_dir="../figures/prob_dist",
-        fig_ext=".svg",
+        summary_file=summary_file,
+        param_file=param_file,
+        case_study=case_study,
+        fig_dir=fig_dir,
+        fig_ext=fig_ext,
+        out_dir=out_dir
     )
+
+
 
     return None
 

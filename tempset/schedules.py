@@ -63,11 +63,6 @@ class Setpoint_Schedule:
             idf_file=pkg_resources.resource_filename('tempset', 'data/idf/gas.idf'),
             new_file=self.eplus_param["mod_file"],
         )
-        # self.write_to_idf(
-        #     edited_schedule=self.mod_schedule,
-        #     idf_file=self.eplus_param["idf_file"],
-        #     new_file=self.eplus_param["mod_file"],
-        # )
 
     def get_schparams_from_json(self, schedule_params):
         """
@@ -144,7 +139,7 @@ class Setpoint_Schedule:
 
         return None
 
-    def change_SETP(self, AllSchedCompacts, schedule_name) -> str:
+    def change_SETP(self, AllSchedCompacts, schedule_name):
         """
         method to modify the temperature schedule
         :param AllSchedCompacts: list of schedule objects, imported from IDF
@@ -570,10 +565,11 @@ class Setpoint_Schedule:
             tSteps = int(t / self.timeRes)
         else:
             diffSeries = pd.Series(main_sch).diff()
+
             if self.schedule_type == "CLGSETP":
-                idx_to_change = np.where(diffSeries.values < 0)[0]
+                idx_to_change = np.where(np.nan_to_num(diffSeries.values) < 0)[0]
             elif self.schedule_type == "HTGSETP":
-                idx_to_change = np.where(diffSeries.values > 0)[0]
+                idx_to_change = np.where(np.nan_to_num(diffSeries.values) > 0)[0]
             tSteps = idx_to_change[0]
 
         # note: originally the code block below was developed to allow the extension for evening heating/cooling extension/curtailment
