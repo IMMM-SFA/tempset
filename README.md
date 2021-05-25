@@ -2,31 +2,34 @@
 BEND temperature set point SA study
 
 ## Getting Started Using the `im3py` Package
-The `im3py` package uses only **Python 3.6** and up.
+The `tempset` package has been verified for **Python 3.7** and up.
 
 ### Step 1:
 You can install `im3py` by running the following from your cloned directory (NOTE: ensure that you are using the desired `pip` instance that matches your Python3 distribution):
 
-`pip3 install git+https://github.com/IMMM-SFA/im3py.git --user`
+`pip3 install git+https://https://github.com/IMMM-SFA/tempset --user`
 
-### Step 2:
+### Step 2tem:
 Confirm that the module and its dependencies have been installed by running from your prompt:
 
 ```python
-from im3py import Model
+from tempset import batch_process_idf
+from tempset import analyze_results
 ```
 
 If no error is returned then you are ready to go!
 
-## Setting up a run
+## Functionalities
+There are two functionalities provided in this repo: (i) **batch_process_idf**: generating a distribution of temperature setpont schedules, with each schedule written to a separate IDF and (ii) **gen_results**: analyzing and plotting probability distributions based on EnergyPlus (E+) simulations using temperature setpoint schedules specified in (i)
 
-### Expected arguments
+
+### batch_process_idf: Expected arguments
 See examples below for how to pass into the `Model` class
 
 | Argument | Type | Description |
 |----|----|----|
-| `config_file` | str | Full path to configuration YAML file with file name and extension. If not provided by the user, the code will default to the expectation of alternate arguments. |
-| `output_directory` | string | Full path with file name and extension to the output directory where outputs and the log file will be written. |
+| `eplus_config` | str | Full path to configuration JSON file with file name and extension. The user needs to specify the IDD and the source IDF from which temperature schedules will be stochastically generated |
+| `param_json` | str| Full path with file name and extension to the JSON file where the parameters associated with the heating setpoint are specified. 
 | `start_step` | int | Start time step value. |
 | `through_step` | int | Through time step value. |
 | `time_step` | int | Number of steps (e.g. number of years or minutes between projections) |
