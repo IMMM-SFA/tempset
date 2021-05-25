@@ -1,18 +1,19 @@
 import pandas as pd
 import numpy as np
 import os
+import time
 import calendar
 
 import holidays
 
-#import statutils
-
+import logging
+from tempset.logger import Logger
 
 import matplotlib.pyplot as plt
 
 
 
-class results:
+class results(Logger):
     def __init__(
         self,
         summary_file="../data/electric/summary.csv",
@@ -20,8 +21,30 @@ class results:
         case_study="I",
         fig_dir="../figures/prob_dist",
         fig_ext=".svg",
-        out_dir=None
+        out_dir=None,
+        write_logfile=False
     ):
+
+        # start time for model run
+        self.out_dir = out_dir
+        self.start_time = time.time()
+
+        if not os.path.exists(self.out_dir):
+            os.makedirs(self.out_dir)
+
+        self.logfile = os.path.join(self.out_dir, f'tempset_logfile_{self.start_time}.log')
+        self.write_logfile = write_logfile
+
+        # initialize console handler for logger
+        self.console_handler()
+
+        if self.write_logfile:
+            self.file_handler()
+
+        logging.info('Starting Analysis of Results')
+
+        # inherit logger class attributes
+        super(results, self).__init__(self.write_logfile, self.logfile)
 
         # get values from arguments
         self.summary_file = summary_file
@@ -29,7 +52,8 @@ class results:
         self.case_study = case_study
         self.fig_dir = fig_dir
         self.fig_ext = fig_ext
-        self.out_dir = out_dir
+
+
 
         plt.rcParams.update({"font.size": 16})
         self.year = 2017
@@ -234,6 +258,8 @@ class results:
                     title=month,
                 )  # ylim = [0, 1.30]
 
+                logging.info(f"Created figures for month:  {calendar.month_name[m+1]}")
+
                 ##export to a csv
                 data = {
                     'Month': [calendar.month_name[m + 1]],
@@ -381,7 +407,8 @@ def analyze_results(summary_file,
                     case_study,
                     fig_dir,
                     fig_ext,
-                    out_dir=None):
+                    out_dir=None,
+                    write_logfile=False):
 
     """
     wrapper for method results
@@ -400,7 +427,8 @@ def analyze_results(summary_file,
         case_study=case_study,
         fig_dir=fig_dir,
         fig_ext=fig_ext,
-        out_dir=out_dir
+        out_dir=out_dir,
+        write_logfile=write_logfile
     )
 
 

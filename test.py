@@ -10,7 +10,7 @@ def testing():
 
     batch_process_idf(eplus_config=eplus_file,
                       param_json=param_file,
-                      batch_param= batch_file,
+                      batch_param=batch_file,
                       htgsetpoint_params_csv_output=None,
                       output_dir=output_dir,
                       write_logfile=False,
@@ -19,17 +19,13 @@ def testing():
     return None
 
 
-
 def analyze():
-
     summary_file = '/people/rahm312/temp-setpoints/tempset/data/electric/summary.csv'
     param_file = '/people/rahm312/temp-setpoints/tempset/data/electric/htgsetp_params_electric.csv'
     case_study = 'I'
     fig_dir = '/people/rahm312/temp-setpoints/tempset/figures/prob_dist'
     fig_ext = '.svg'
     output_dir = "/people/rahm312/temp-setpoints/tempset/output/"
-
-
 
     analyze_results(
         summary_file=summary_file,
@@ -40,13 +36,9 @@ def analyze():
         out_dir=output_dir
     )
 
-
-
-
     return None
 
 
-
-if __name__=="__main__":
+if __name__ == "__main__":
     #testing()
     analyze()

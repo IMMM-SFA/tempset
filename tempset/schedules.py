@@ -1,7 +1,6 @@
 import json
 import os
 import pandas as pd
-
 import pkg_resources
 
 import numpy as np
@@ -14,7 +13,7 @@ class Setpoint_Schedule:
     def __init__(self,
                  schedule_params,
                  fig_dir = '../figures/',
-                 idd_file=None,
+                 idd_file = None,
                  **kwargs):
         """
         Constructs necessary attributes for a setpoint schedule object
@@ -25,10 +24,9 @@ class Setpoint_Schedule:
         You can add eplus_param as an additional argument eplus_param
         """
 
-        # get arguments
+        #get arguments
         self.fig_dir = fig_dir
 
-        # create fig directory if not exists
         if not os.path.exists(self.fig_dir):
             os.makedirs(self.fig_dir)
 
@@ -39,16 +37,15 @@ class Setpoint_Schedule:
             self.set_eplus_config()
 
         # set  IDD
+
         if idd_file is None:
             self.idd_file = pkg_resources.resource_filename('tempset', 'data/eplus/Energy+.idd')
         else:
             self.idd_file = idd_file
-        # self.idd_file = self.eplus_param["idd_file"]
         IDF.setiddname(self.idd_file)
 
         # import IDF and extract all the scedules
         idf_1 = IDF(idfname=pkg_resources.resource_filename('tempset', 'data/idf/gas.idf'))
-        # idf_1 = IDF(idfname=self.eplus_param["idf_file"])
         AllSchedComapcts = idf_1.idfobjects["Schedule:Compact"]
 
         # get params from json'
@@ -83,22 +80,25 @@ class Setpoint_Schedule:
 
         # assigning probability related parameters
         # threshold probability corresponding to the max setback
-        self.p_threshSetback = schedule_params["p_threshSetback"]
+        self.p_threshSetback = schedule_params["p_tp"]
         # probability threshold for rampup rate
         self.p_threshRamp = schedule_params["p_threshRamp"]
         # obtained from data_utils: fraction of CBECS office with setback
         self.setback_p = schedule_params["setback_p"]
 
         # Assert schedule setpoint is valid.
-        assert self.schedule_type == "CLGSETP" or self.schedule_type == "HTGSETP"
+        try:
+            assert self.schedule_type == "CLGSETP" or self.schedule_type == "HTGSETP"
+        except AssertionError:
+            print('Enter Valid Schedule Type. Only CLGSETP or HTGSETP supported')
+            raise
 
         # assigning time related parameters
-        self.timeRes = schedule_params["timeRes"]
+        self.timeRes = 1 #in minutes. Generate plot at min granularity
         self.hourSteps = int(60 / self.timeRes)
 
         # Parameters for pre-heating/pre-cooling
-        self.setback_tol = schedule_params["max_setbackhour"]
-        self.occupied_times = schedule_params["occupied_times"]
+        self.setback_tol = schedule_params["t_pthresh"]
 
         # parameters for ramp-up rate
         # maximum hours over which ramping can take place
@@ -106,7 +106,7 @@ class Setpoint_Schedule:
         # time resolution at which ramping can occur. recommended = 15 mins
         self.rampRes = schedule_params["rampRes"]
         # minimum rampup rate, as defined in json
-        self.rampup_min = schedule_params["rampRate_min"]
+        self.rampup_min = schedule_params["gamma_thresh"]
         self.roundOff_temp = 0.5  # rounding of temperatures to the nearest 1 C
 
         # get plotting preferences
@@ -115,11 +115,11 @@ class Setpoint_Schedule:
 
         # specify cooling setpoint during occcupied and unoccupied times'
         if self.schedule_type == "CLGSETP":
-            self.coolingSETP_occ = schedule_params["coolingSETP_occ"]
-            self.coolingSETP_unocc = schedule_params["coolingSETP_unocc"]
+            self.coolingSETP_occ = schedule_params["coolingSETP_op"]
+            self.coolingSETP_unocc = schedule_params["coolingSETP_setback"]
         elif self.schedule_type == "HTGSETP":
-            self.heatingSETP_occ = schedule_params["heatingSETP_occ"]
-            self.heatingSETP_unocc = schedule_params["heatingSETP_unocc"]
+            self.heatingSETP_occ = schedule_params["heatingSETP_op"]
+            self.heatingSETP_unocc = schedule_params["heatingSETP_setback"]
 
         else:
             print("Enter Valid Setpoint Schedule")
@@ -131,15 +131,17 @@ class Setpoint_Schedule:
         method to automatically set default eplus configs if not provided by the user
         """
 
-        with open('../json/eplus_params.json') as j:
-            eplus_param = json.load(j)
-        eplus_param['mod_file'] = '../test_idf/test.idf'
+        eplus_param = {
+            "idd_file": "/usr/local/EnergyPlus-9-0-1/Energy+.idd",
+            "idf_file": "../2004/ref.idf",
+            "mod_file": "MOD.idf",
+        }
 
         self.eplus_param = eplus_param
 
         return None
 
-    def change_SETP(self, AllSchedCompacts, schedule_name):
+    def change_SETP(self, AllSchedCompacts, schedule_name) -> str:
         """
         method to modify the temperature schedule
         :param AllSchedCompacts: list of schedule objects, imported from IDF
@@ -213,6 +215,9 @@ class Setpoint_Schedule:
                     if str(list_of_names[j]) in self.days_list:
                         self.OG_timeSeries = temp_TimeSeries
 
+                        #get the transition times in the base schedule
+                        self.start_time, self.end_time = self.get_transition_times()
+
                         # get unique values in the original time series
                         _unique_temps = np.unique(self.OG_timeSeries)
 
@@ -256,7 +261,7 @@ class Setpoint_Schedule:
                                 ts=self.mod_timeSeries,
                                 colors={"ts": "blue"},
                                 fig_name=self.fig_dir+"plot_schema.svg",
-                                trim_graph=True,
+                                trim_graph=False,
                             )
 
                     if j == len(list_of_lines) - 1:
@@ -338,22 +343,21 @@ class Setpoint_Schedule:
         if trim_graph is False:
             plt.xlim([0, 24])
             plt.xticks(ticks=np.arange(0, 24, 6))
-            plt.yticks(ticks=np.arange(14, 24, 1))
+            if self.schedule_type == 'HTGSETP':
+                plt.yticks(ticks=np.arange(14, 24, 1))
+            else:
+                plt.yticks(ticks=np.arange(20, 30, 1))
         else:
             plt.xlim([4, 7])
             plt.xticks(ticks=np.arange(4, 7, 2))
             plt.yticks(ticks=np.arange(23, 30, 1))
         plt.xlabel("Hour of Day", fontdict=font)
         plt.ylabel("Temperature (C)", fontdict=font)
-
-        # plt.ylim([15, 23])
         plt.tight_layout()
-        # plt.show()
 
         if fig_name is not None:
             plt.tight_layout()
-            plt.savefig(fig_name)
-            # plt.show()
+            plt.savefig(self.fig_dir+ fig_name)
             plt.clf()
 
         return None
@@ -368,24 +372,12 @@ class Setpoint_Schedule:
 
         # get the parameters from the dict
         if self.schedule_type == "CLGSETP":
-            Tc_min_unocc, Tc_max_unocc = (
-                self.coolingSETP_unocc["min"],
-                self.coolingSETP_unocc["max"],
-            )
-            Tc_min_occ, Tc_max_occ = (
-                self.coolingSETP_occ["min"],
-                self.coolingSETP_occ["max"],
-            )
+            Tc_max_unocc =  self.coolingSETP_unocc["max"]
+            Tc_min_occ=  self.coolingSETP_occ["min"]
             T_sc, T_oc = np.max(temp_TimeSeries), np.min(temp_TimeSeries)
         elif self.schedule_type == "HTGSETP":
-            Th_min_unocc, Th_max_unocc = (
-                self.heatingSETP_unocc["min"],
-                self.heatingSETP_unocc["max"],
-            )
-            Th_min_occ, Th_max_occ = (
-                self.heatingSETP_occ["min"],
-                self.heatingSETP_unocc["max"],
-            )
+            Th_min_unocc = self.heatingSETP_unocc["min"]
+            Th_max_occ =  self.heatingSETP_occ["max"]
             T_sh, T_oh = np.min(temp_TimeSeries), np.max(temp_TimeSeries)
 
         else:
@@ -480,7 +472,7 @@ class Setpoint_Schedule:
                     )
                 else:
                     # t_diff > 0 -> fix end_time first
-                    end_time = int(self.hourSteps * self.occupied_times["max"])
+                    end_time = int(self.hourSteps * self.end_time)
                     start_time = int(end_time - self.hourSteps * delta_t) - 1
                     # start_time = end_time
             elif self.schedule_type == "HTGSETP":
@@ -491,7 +483,7 @@ class Setpoint_Schedule:
                     )
                 else:
                     # t_diff > 0 -> fix end_time first
-                    end_time = int(self.hourSteps * self.occupied_times["max"])
+                    end_time = int(self.hourSteps * self.end_time)
                     start_time = int(end_time - self.hourSteps * delta_t) - 1
                     # start_time = end_time
             else:
@@ -565,11 +557,10 @@ class Setpoint_Schedule:
             tSteps = int(t / self.timeRes)
         else:
             diffSeries = pd.Series(main_sch).diff()
-
             if self.schedule_type == "CLGSETP":
-                idx_to_change = np.where(np.nan_to_num(diffSeries.values) < 0)[0]
+                idx_to_change = np.where(diffSeries.values < 0)[0]
             elif self.schedule_type == "HTGSETP":
-                idx_to_change = np.where(np.nan_to_num(diffSeries.values) > 0)[0]
+                idx_to_change = np.where(diffSeries.values > 0)[0]
             tSteps = idx_to_change[0]
 
         # note: originally the code block below was developed to allow the extension for evening heating/cooling extension/curtailment
@@ -636,6 +627,20 @@ class Setpoint_Schedule:
         temp_diff = temp_diff[1:]
 
         return t_diff.astype(int), limit_mins.astype(int), temp_diff
+
+
+    def get_transition_times(self):
+
+        """
+        method to get the start time and end time in the base schedule
+        :return times[0], times[1]: int -> start and end times in base schedules (in hours)
+        """
+
+        diff_ts = np.nan_to_num(np.diff(self.OG_timeSeries))
+        times = np.rint((self.timeRes/60)*(np.where(diff_ts != 0)[0]))
+        times = times.astype(int)
+
+        return times[0], times[1]
 
     def schedule_rampup(self, sch, start_time, end_time):
         """
@@ -916,11 +921,11 @@ def test_schedule():
     function to test if the generated schedules are working
     """
 
-    param_file = "../json/htgsetp_params.json"
+    param_file = "../json/clgsetp_params.json"
     with open(param_file) as j:
         sch_params = json.load(j)
 
-    np.random.seed(80)
+    np.random.seed(83)
     setp_sch = Setpoint_Schedule(schedule_params=sch_params)
 
     return None

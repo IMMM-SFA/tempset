@@ -1,7 +1,5 @@
 
 {   
         "max_iter": 10,
-        "csv_file": "../data/htgsetp_params_gas.csv",
-        "new_dir": "../test_idf",
         "n_jobs": 1
 }
