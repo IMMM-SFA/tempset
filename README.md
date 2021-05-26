@@ -18,8 +18,47 @@ import tempset
 
 If no error is returned then you are ready to go!
 
-## Functionalities
-There are two functionalities provided in this repo: (i) **batch_process_idf**: generating a distribution of temperature setpont schedules, with each schedule written to a separate IDF and (ii) **gen_results**: analyzing and plotting probability distributions based on EnergyPlus (E+) simulations using temperature setpoint schedules specified in (i). `test.py` shows examples of how these functions can be used.
+## Functionaly
+There are two functionalities provided in this repo:
+
+(i) **`batch_process_idf()`**: generating a distribution of temperature setpont schedules, with each schedule written to a separate IDF:
+
+```python
+import tempset
+
+eplus_file = tempset.get_example_eplus_file()
+batch_file = tempset.get_example_batch_file()
+param_file = tempset.get_example_htgsetp_file()
+output_dir = "<your desired output directory>"
+
+tempset.batch_process_idf(eplus_config=eplus_file,
+                          param_json=param_file,
+                          batch_param=batch_file,
+                          htgsetpoint_params_csv_output=None,
+                          output_dir=output_dir,
+                          write_logfile=False,
+                          idf_file=None)
+```
+
+(ii) **`gen_results()`**: analyzing and plotting probability distributions based on EnergyPlus (E+) simulations using temperature setpoint schedules specified in (i):
+
+```python
+import tempset
+
+summary_file = tempset.get_example_summary_file()
+param_file = tempset.get_example_htgsetp_params_file()
+case_study = 'I' # just means input in this case
+fig_dir = '<your desired figure directory>'
+fig_ext = '.svg'
+output_dir = "<your desired output directory>"
+
+tempset.analyze_results(summary_file=summary_file,
+                        param_file=param_file,
+                        case_study=case_study,
+                        fig_dir=fig_dir,
+                        fig_ext=fig_ext,
+                        out_dir=output_dir)
+```
 
 
 ### `batch_process_idf`: Expected arguments
@@ -85,34 +124,4 @@ Users can update variable argument values after model initialization; this inclu
 - `beta_param` -->
 
 #### `analyze_results`: Expected Outputs
-Figures of three probability distributions for each month in year stored in `fig_dir`. The three distributions correspond to our three output metrics: total daily electricity consumption, maximum hourly consumption computed per day and mean PPD during occupied hours. 
-
-## Examples
-
-See `test.py` for examples of both of these functions.
-
-<!-- 
-### Example 1:  Run `im3py` for all years using a configuration file
-```python
-from im3py.model import Model
-
-run = Model(config_file="<path to your config file with the file name and extension.")
-
-run.run_all_steps()
-```
-
-### Example 2:  Run `im3py` for all years by passing argument values
-```python
-from im3py.model import Model
-
-run = Model(output_directory="<output directory path>",
-            start_step=2015,
-            through_step=2016,
-            time_step=1,
-            alpha_param=2.0,
-            beta_param=1.42,
-            write_logfile=False)
-
-run.run_all_steps()
-```
- -->
+Figures of three probability distributions for each month in year stored in `fig_dir`. The three distributions correspond to our three output metrics: total daily electricity consumption, maximum hourly consumption computed per day and mean PPD during occupied hours.

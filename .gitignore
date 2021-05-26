@@ -1,3 +1,7 @@
+
+tempset.egg-info/
+dist
+build
 example.py
 
 # pyenv
