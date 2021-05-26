@@ -4,6 +4,8 @@ __email__ = "aowabin.rahman@pnnl.gov"
 
 from tempset.batchprocess import batch_process_idf
 from tempset.gen_results import analyze_results
+from tempset.package_data import *
 
 
-__all__ = ["batch_process_idf", "analyze_results"]
+__all__ = ["batch_process_idf", "analyze_results", "get_example_eplus_file", "get_example_batch_file",
+           "get_example_htgsetp_file"]

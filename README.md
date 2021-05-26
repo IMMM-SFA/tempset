@@ -13,8 +13,7 @@ You can install `tempset` by running the following from your cloned directory (N
 Confirm that the module and its dependencies have been installed by running from your prompt:
 
 ```python
-from tempset import batch_process_idf
-from tempset import analyze_results
+import tempset
 ```
 
 If no error is returned then you are ready to go!
