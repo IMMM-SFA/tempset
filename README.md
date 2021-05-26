@@ -7,7 +7,7 @@ The `tempset` package has been verified for **Python 3.7** and up.
 ### Step 1:
 You can install `tempset` by running the following from your cloned directory (NOTE: ensure that you are using the desired `pip` instance that matches your Python3 distribution):
 
-`pip3 install git+https://https://github.com/IMMM-SFA/tempset --user`
+`pip3 install git+https://github.com/IMMM-SFA/tempset --user`
 
 ### Step 2:
 Confirm that the module and its dependencies have been installed by running from your prompt:
@@ -58,8 +58,8 @@ The user inputs to define parameters for generating stochastic schedules need to
 | `p_tp`| float | Confidence interval assocated with `t_pthresh`. For instance, a value of 0.01 corresponds to 99% of generated scheduules having t_p <= t_{p,thresh}|
 | `p_threshRamp`| float | Confidence interval assocated with `max_ramohour`|
 | `setback_p`| float | Probability with which a given schedule will have a setback. |
-| `plot_base_schedule`| false | Bool indicating whether to plot the base (i.e. source) schedule |
-| `plot_mod_schedule`| false | Bool indicating whether to plot the stochastically-generated schedule. Use it for troubleshooting when running `schedules.py` as standalone|
+| `plot_base_schedule`| bool | Bool indicating whether to plot the base (i.e. source) schedule |
+| `plot_mod_schedule`| bool | Bool indicating whether to plot the stochastically-generated schedule. Use it for troubleshooting when running `schedules.py` as standalone|
 
 
 #### `batch_process_idf`: Expected Outputs
