@@ -1,0 +1,46 @@
+#!/usr/bin/perl -w
+
+# Script to read an E+ stat file and write out
+# an IDF snippet for water mains temperature 
+
+use lib '/projects/bigsim/bin/post.processing';
+use PostProcess;  # skip_to function...
+
+# Open the file for reading...
+my $infile = shift || '-';
+unless ($infile eq '-') {
+	open(STDIN, $infile) or die "Couldn't open $infile for reading: $!";
+	}
+
+# We need the annual average outdoor temperature and the maximum
+# difference in monthly outdoor air temperature..
+
+# Look for the line with average daily dry bulb temperatures...
+
+my $line = skip_to(qr/Daily Avg/, \*STDIN, {missing_ok => 0});
+my @values = split (' ', $line);
+shift @values foreach 1..2;
+my ($sum,$annavg);
+for my $i (0..$#values) {
+			$sum += $values[$i];}
+
+$annavg = $sum/($#values + 1);
+
+# Sorting the array to get the maximum and minimum values...
+my @sorted = sort { $a <=> $b } @values;
+
+my $maxodt = $sorted[$#sorted];
+my $minodt = $sorted[0];
+my $maxdiff = $maxodt - $minodt;
+
+# Generating the E+ idf snippet...
+
+my @output;
+
+push (@output, "$annavg,                       		!- Annual average outdoor air temperature {C}\n");
+push (@output, "$maxdiff;	                     		!- Maximum difference in monthly average outdoor air temperatures {C}\n");
+
+print @output;
+
+exit;
+

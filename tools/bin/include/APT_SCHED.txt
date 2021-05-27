@@ -1,0 +1,689 @@
+##def Schedule_Benchmarks_Apartment[]
+! Schedule set Schedule_Benchmarks_Apartment[]
+
+! this is the same as the apt_light_sch and copied here 
+! for standards apply methods.
+Schedule:Compact,   
+  BLDG_LIGHT_SCH,
+  Fraction,
+  Through: 12/31,
+  For: AllDays,
+  Until: 04:00,
+  0.067,
+  Until: 05:00,
+  0.187,
+  Until: 06:00,
+  0.394,
+  Until: 07:00,
+  0.440,
+  Until: 08:00,
+  0.393,
+  Until: 09:00,
+  0.172,
+  Until: 15:00,
+  0.119,
+  Until: 16:00,
+  0.206,
+  Until: 17:00,
+  0.439,
+  Until: 18:00,
+  0.616,
+  Until: 19:00,
+  0.829,
+  Until: 20:00,
+  0.986,
+  Until: 21:00,
+  1.0,
+  Until: 22:00,
+  0.692,
+  Until: 23:00,
+  0.384,
+  Until: 24:00,
+  0.160;
+
+Schedule:Compact,
+  APT_LIGHT_SCH,
+  Fraction,
+  Through: 12/31,
+  For: AllDays,
+  Until: 04:00,
+  0.067,
+  Until: 05:00,
+  0.187,
+  Until: 06:00,
+  0.394,
+  Until: 07:00,
+  0.440,
+  Until: 08:00,
+  0.393,
+  Until: 09:00,
+  0.172,
+  Until: 15:00,
+  0.119,
+  Until: 16:00,
+  0.206,
+  Until: 17:00,
+  0.439,
+  Until: 18:00,
+  0.616,
+  Until: 19:00,
+  0.829,
+  Until: 20:00,
+  0.986,
+  Until: 21:00,
+  1.0,
+  Until: 22:00,
+  0.692,
+  Until: 23:00,
+  0.384,
+  Until: 24:00,
+  0.160;
+
+Schedule:Compact,
+  OFF_LIGHT_SCH,
+  Fraction,
+  Through: 12/31,
+  For: Weekdays WinterDesignDay,
+  Until: 08:00,
+  0.18,
+  Until: 12:00,
+  0.90,
+  Until: 13:00,
+  0.80,
+  Until: 17:00,
+  0.90,
+  Until: 24:00,
+  0.18,
+  For: AllOtherDays,
+  Until: 24:00,
+  0.18;
+
+Schedule:Compact,
+  COR_LIGHT_SCH,             !- Name
+  Fraction,                !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  1.0;                     !- Field 4
+
+Schedule:Compact,
+  BLDG_OCC_SCH,             !- Name
+  Fraction,                !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 7:00,             !- Field 3
+  1.0,                     !- Field 4
+  Until: 8:00,             !- Field 5
+  0.85,                    !- Field 6
+  Until: 9:00,             !- Field 7
+  0.39,                    !- Field 8
+  Until: 16:00,            !- Field 9
+  0.25,                    !- Field 10
+  Until: 17:00,            !- Field 11
+  0.3,                     !- Field 12
+  Until: 18:00,            !- Field 13
+  0.52,                    !- Field 14
+  Until: 21:00,            !- Field 15
+  0.87,                    !- Field 16
+  Until: 24:00,            !- Field 17
+  1.0;                     !- Field 18
+    
+Schedule:Compact,
+  APT_OCC_SCH,             !- Name
+  Fraction,                !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 7:00,             !- Field 3
+  1.0,                     !- Field 4
+  Until: 8:00,             !- Field 5
+  0.85,                    !- Field 6
+  Until: 9:00,             !- Field 7
+  0.39,                    !- Field 8
+  Until: 16:00,            !- Field 9
+  0.25,                    !- Field 10
+  Until: 17:00,            !- Field 11
+  0.3,                     !- Field 12
+  Until: 18:00,            !- Field 13
+  0.52,                    !- Field 14
+  Until: 21:00,            !- Field 15
+  0.87,                    !- Field 16
+  Until: 24:00,            !- Field 17
+  1.0;                     !- Field 18
+
+Schedule:Compact,
+  OFF_OCC_SCH,             !- Name
+  Fraction,                !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: Weekdays SummerDesignDay WinterDesignDay, !- Field 2
+  Until: 8:00,             !- Field 3
+  0.0,                     !- Field 4
+  Until: 12:00,            !- Field 5
+  1.0,                     !- Field 6
+  Until: 13:00,            !- Field 7
+  0.5,                     !- Field 8
+  Until: 17:00,            !- Field 9
+  1.0,                     !- Field 10
+  Until: 24:00,            !- Field 11
+  0.0,                     !- Field 12
+  For AllOtherDays,        !- Field 13
+  Until: 24:00,            !- Field 14
+  0.0;                     !- Field 15
+
+Schedule:Compact,
+  APT_EQP_SCH,             !- Name
+  Fraction,                !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 1:00,             !- Field 3
+  0.45,                    !- Field 4
+  Until: 2:00,             !- Field 5
+  0.41,                    !- Field 6
+  Until: 3:00,             !- Field 7
+  0.39,                    !- Field 8
+  Until: 5:00,             !- Field 9
+  0.38,                    !- Field 10
+  Until: 6:00,             !- Field 11
+  0.43,                    !- Field 12
+  Until: 7:00,             !- Field 13
+  0.54,                    !- Field 14
+  Until: 8:00,             !- Field 15
+  0.65,                    !- Field 16
+  Until: 9:00,             !- Field 17
+  0.66,                    !- Field 18
+  Until: 10:00,            !- Field 19
+  0.67,                    !- Field 20
+  Until: 11:00,            !- Field 21
+  0.69,                    !- Field 22
+  Until: 12:00,            !- Field 23
+  0.70,                    !- Field 24
+  Until: 13:00,            !- Field 25
+  0.69,                    !- Field 26
+  Until: 14:00,            !- Field 27
+  0.66,                    !- Field 28
+  Until: 15:00,            !- Field 29
+  0.65,                    !- Field 30
+  Until: 16:00,            !- Field 31
+  0.68,                    !- Field 32
+  Until: 17:00,            !- Field 33
+  0.80,                    !- Field 34
+  Until: 19:00,            !- Field 35
+  1.0,                     !- Field 36
+  Until: 20:00,            !- Field 37
+  0.93,                    !- Field 38
+  Until: 21:00,            !- Field 39
+  0.89,                    !- Field 40
+  Until: 22:00,            !- Field 41
+  0.85,                    !- Field 42
+  Until: 23:00,            !- Field 43
+  0.71,                    !- Field 44
+  Until: 24:00,            !- Field 45
+  0.58;                    !- Field 46
+
+Schedule:Compact,
+  OFF_EQP_SCH,             !- Name
+  Fraction,                !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: Weekdays SummerDesignDay, !- Field 2
+  Until: 7:00,             !- Field 3
+  0.33,                    !- Field 4
+  Until: 8:00,             !- Field 5
+  0.5,                     !- Field 6
+  Until: 12:00,            !- Field 7
+  1.0,                     !- Field 8
+  Until: 13:00,            !- Field 9
+  0.94,                    !- Field 10
+  Until: 17:00,            !- Field 11
+  1.0,                     !- Field 12
+  Until: 18:00,            !- Field 13
+  0.5,                     !- Field 14
+  Until: 24:00,            !- Field 15
+  0.33,                    !- Field 16
+  For AllOtherDays,        !- Field 17
+  Until: 24:00,            !- Field 18
+  0.33;                    !- Field 19
+
+Schedule:Compact,
+  APT_HTGSETP_SCH,         !- Name
+  Temperature,             !- Schedule Type Limits Name
+  THROUGH: 12/31,          !- Field 1
+  FOR:AllDays,             !- Field 2
+  UNTIL: 24:00,            !- Field 3
+  21.1;                    !- Field 4
+
+Schedule:Compact,
+  APT_CLGSETP_SCH,         !- Name
+  Temperature,             !- Schedule Type Limits Name
+  THROUGH: 12/31,          !- Field 1
+  FOR:AllDays,             !- Field 2
+  UNTIL: 24:00,            !- Field 3
+  23.9;                    !- Field 4
+
+Schedule:Compact,
+  UnitHeater_HtgSP_Sch,         !- Name
+  Temperature,             !- Schedule Type Limits Name
+  THROUGH: 12/31,          !- Field 1
+  FOR:AllDays,             !- Field 2
+  UNTIL: 24:00,            !- Field 3
+  15.6;                    !- Field 4
+
+Schedule:Compact,
+  UnitHeater_ClgSP_Sch,         !- Name
+  Temperature,             !- Schedule Type Limits Name
+  THROUGH: 12/31,          !- Field 1
+  FOR:AllDays,             !- Field 2
+  UNTIL: 24:00,            !- Field 3
+  40;                    !- Field 4
+
+Schedule:Compact,
+  OFF_HTGSETP_SCH,         !- Name
+  Temperature,             !- Schedule Type Limits Name
+  THROUGH: 12/31,          !- Field 1
+  FOR:Weekdays WinterDesignDay,  !- Field 2
+  UNTIL: 7:00,             !- Field 3
+  15.6,                    !- Field 4
+  UNTIL: 8:00,             !- Field 5
+  18.3,                    !- Field 6
+  UNTIL:17:00,             !- Field 7
+  21.1,                    !- Field 8
+  UNTIL: 18:00,            !- Field 9
+  18.3,                    !- Field 10
+  UNTIL: 24:00,            !- Field 11
+  15.6,                    !- Field 12
+  FOR: AllOtherDays,       !- Field 13
+  UNTIL: 24:00,            !- Field 14
+  15.6;                    !- Field 15
+
+Schedule:Compact,
+  OFF_CLGSETP_SCH,         !- Name
+  Temperature,             !- Schedule Type Limits Name
+  THROUGH: 12/31,          !- Field 1
+  FOR:Weekdays SummerDesignDay, !- Field 2
+  UNTIL: 7:00,             !- Field 3
+  29.4,                    !- Field 4
+  UNTIL: 8:00,             !- Field 5
+  26.7,                    !- Field 6
+  UNTIL:17:00,             !- Field 7
+  23.9,                    !- Field 8
+  UNTIL: 18:00,            !- Field 9
+  26.7,                    !- Field 10
+  UNTIL: 24:00,            !- Field 11
+  29.4,                    !- Field 12
+  FOR: AllOtherDays,       !- Field 13
+  UNTIL: 24:00,            !- Field 14
+  29.4;                    !- Field 15
+
+Schedule:Compact,
+  INFIL_SCH,               !- Name
+  Fraction,                !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  1;                       !- Field 4
+
+Schedule:Compact,
+  INFIL_HALF_ON_SCH,       !- Name
+  fraction,                !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  0.5;                     !- Field 4
+
+Schedule:Compact,
+  INFIL_QUARTER_ON_SCH,    !- Name
+  fraction,                !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  0.25;                    !- Field 4
+
+Schedule:Compact,  ! this is the same as apt_dhw_sch.
+  BLDG_SWH_SCH,             !- Name
+  Fraction,                !- Schedule Type Limits Name
+  THROUGH: 12/31,          !- Field 1
+  FOR: AllDays,            !- Field 2
+  UNTIL: 1:00,             !- Field 3
+  0.08,                    !- Field 4
+  UNTIL: 2:00,             !- Field 5
+  0.04,                    !- Field 6
+  UNTIL: 3:00,             !- Field 7
+  0.01,                    !- Field 8
+  UNTIL: 4:00,             !- Field 9
+  0.01,                    !- Field 10
+  UNTIL: 5:00,             !- Field 11
+  0.04,                    !- Field 12
+  UNTIL: 6:00,             !- Field 13
+  0.27,                    !- Field 14
+  UNTIL: 7:00,             !- Field 15
+  0.94,                    !- Field 16
+  UNTIL: 8:00,             !- Field 17
+  1.00,                    !- Field 18
+  UNTIL: 9:00,             !- Field 19
+  0.96,                    !- Field 20
+  UNTIL: 10:00,            !- Field 21
+  0.84,                    !- Field 22
+  UNTIL: 11:00,            !- Field 23
+  0.76,                    !- Field 24
+  UNTIL: 12:00,            !- Field 25
+  0.61,                    !- Field 26
+  UNTIL: 13:00,            !- Field 27
+  0.53,                    !- Field 28
+  UNTIL: 14:00,            !- Field 29
+  0.47,                    !- Field 30
+  UNTIL: 15:00,            !- Field 31
+  0.41,                    !- Field 32
+  UNTIL: 16:00,            !- Field 33
+  0.47,                    !- Field 34
+  UNTIL: 17:00,            !- Field 35
+  0.55,                    !- Field 36
+  UNTIL: 18:00,            !- Field 37
+  0.73,                    !- Field 38
+  UNTIL: 19:00,            !- Field 39
+  0.86,                    !- Field 40
+  UNTIL: 20:00,            !- Field 41
+  0.82,                    !- Field 42
+  UNTIL: 21:00,            !- Field 43
+  0.75,                    !- Field 44
+  UNTIL: 22:00,            !- Field 45
+  0.61,                    !- Field 46
+  UNTIL: 23:00,            !- Field 47
+  0.53,                    !- Field 48
+  UNTIL: 24:00,            !- Field 49
+  0.29;                    !- Field 50
+
+
+Schedule:Compact,
+  APT_DHW_SCH,             !- Name
+  Fraction,                !- Schedule Type Limits Name
+  THROUGH: 12/31,          !- Field 1
+  FOR: AllDays,            !- Field 2
+  UNTIL: 1:00,             !- Field 3
+  0.08,                    !- Field 4
+  UNTIL: 2:00,             !- Field 5
+  0.04,                    !- Field 6
+  UNTIL: 3:00,             !- Field 7
+  0.01,                    !- Field 8
+  UNTIL: 4:00,             !- Field 9
+  0.01,                    !- Field 10
+  UNTIL: 5:00,             !- Field 11
+  0.04,                    !- Field 12
+  UNTIL: 6:00,             !- Field 13
+  0.27,                    !- Field 14
+  UNTIL: 7:00,             !- Field 15
+  0.94,                    !- Field 16
+  UNTIL: 8:00,             !- Field 17
+  1.00,                    !- Field 18
+  UNTIL: 9:00,             !- Field 19
+  0.96,                    !- Field 20
+  UNTIL: 10:00,            !- Field 21
+  0.84,                    !- Field 22
+  UNTIL: 11:00,            !- Field 23
+  0.76,                    !- Field 24
+  UNTIL: 12:00,            !- Field 25
+  0.61,                    !- Field 26
+  UNTIL: 13:00,            !- Field 27
+  0.53,                    !- Field 28
+  UNTIL: 14:00,            !- Field 29
+  0.47,                    !- Field 30
+  UNTIL: 15:00,            !- Field 31
+  0.41,                    !- Field 32
+  UNTIL: 16:00,            !- Field 33
+  0.47,                    !- Field 34
+  UNTIL: 17:00,            !- Field 35
+  0.55,                    !- Field 36
+  UNTIL: 18:00,            !- Field 37
+  0.73,                    !- Field 38
+  UNTIL: 19:00,            !- Field 39
+  0.86,                    !- Field 40
+  UNTIL: 20:00,            !- Field 41
+  0.82,                    !- Field 42
+  UNTIL: 21:00,            !- Field 43
+  0.75,                    !- Field 44
+  UNTIL: 22:00,            !- Field 45
+  0.61,                    !- Field 46
+  UNTIL: 23:00,            !- Field 47
+  0.53,                    !- Field 48
+  UNTIL: 24:00,            !- Field 49
+  0.29;                    !- Field 50
+
+Schedule:Compact,
+  ALWAYS_ON,               !- Name
+  On/Off,                  !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  1;                       !- Field 4
+
+Schedule:Compact,
+  ALWAYS_OFF,              !- Name
+  On/Off,                  !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  0;                       !- Field 4
+
+
+Schedule:Compact,
+  FAN_SCH,                 !- Name
+  Any Number,              !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  1;                       !- Field 4
+
+Schedule:Compact,
+  Hours_of_operation,      !- Name
+  on/off,                  !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  1.0;                     !- Field 4
+  
+!Schedule:Compact,
+!  SWHSys1 Water Heater Ambient Temperature Schedule Name,  !- Name
+!  Temperature,  !- Schedule Type Limits Name
+!  Through: 12/31,  !- Field 1
+!  For: AllDays,  !- Field 2
+!  Until: 24:00,  !- Field 3
+!  22.0;  !- Field 4
+!  
+!Schedule:Compact,
+!  SWHSys1 Water Heater Setpoint Temperature Schedule Name,  !- Name
+!  Temperature,  !- Schedule Type Limits Name
+!  Through: 12/31,  !- Field 1
+!  For: AllDays,  !- Field 2
+!  Until: 24:00,  !- Field 3
+!  60.0;  !- Field 4
+!  
+!Schedule:Compact,
+!  SWHSys1-Loop-Temp-Schedule,  !- Name
+!  Temperature,  !- Schedule Type Limits Name
+!  Through: 12/31,  !- Field 1
+!  For: AllDays,  !- Field 2
+!  Until: 24:00,  !- Field 3
+!  60.0;  !- Field 4
+
+Schedule:Compact,
+  CoolingCoilAvailSched,   !- Name
+  Any Number,              !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  1;                       !- Field 4
+
+Schedule:Compact,
+  Dual Zone Control Type Sched,  !- Name
+  Control Type,            !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  4;                       !- Field 4
+
+Schedule:Compact,
+  HVACOperationSchd,       !- Name
+  On/Off,                  !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,  !- Field 2
+  Until: 24:00,            !- Field 3
+  1;                       !- Field 4
+
+Schedule:Compact,
+  Seasonal-Reset-Supply-Air-Temp-Sch,  !- Name
+  Temperature,             !- Schedule Type Limits Name
+  Through: 3/31,           !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  13.0,                    !- Field 4
+  Through: 9/30,           !- Field 5
+  For: AllDays,            !- Field 6
+  Until: 24:00,            !- Field 7
+  13.0,                    !- Field 8
+  Through: 12/31,          !- Field 9
+  For: AllDays,            !- Field 10
+  Until: 24:00,            !- Field 11
+  13.0;                    !- Field 12
+
+Schedule:Compact,
+  CW-Loop-Temp-Schedule,   !- Name
+  Temperature,             !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  6.7;                     !- Field 4
+
+Schedule:Compact,
+  HW-Loop-Temp-Schedule,   !- Name
+  Temperature,             !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  60.;                     !- Field 4
+
+Schedule:Compact,
+  Heating-Supply-Air-Temp-Sch,  !- Name
+  Temperature,             !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  16.0;                    !- Field 4
+
+Schedule:Compact,
+  MinOA_Sched,             !- Name
+  On/Off,                  !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,  !- Field 2
+  Until: 24:00,            !- Field 3
+  1;                       !- Field 4
+
+ Schedule:Compact,
+  MinRelHumSetSch,  
+  Humidity,                 
+  Through: 12/31,        
+  For: AllDays,           
+  Until: 24:00,             
+  30;                          
+  
+Schedule:Compact,
+  MaxRelHumSetSch,  
+  Humidity,                 
+  Through: 12/31,        
+  For: AllDays,           
+  Until: 24:00,             
+  60;
+
+Schedule:Compact,
+  MinOA_MotorizedDamper_Sched,  !- Name
+  Fraction,                !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  1.0;                     !- Field 4
+
+Schedule:Compact,
+  ACTIVITY_SCH,            !- Name
+  Any Number,              !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  120;                     !- Field 4
+
+Schedule:Compact,
+  WORK_EFF_SCH,            !- Name
+  Fraction,                !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  0.0;                     !- Field 4
+
+Schedule:Compact,
+  AIR_VELO_SCH,            !- Name
+  Any Number,              !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  0.2;                     !- Field 4
+
+Schedule:Compact,
+  CLOTHING_SCH,            !- Name
+  Any Number,              !- Schedule Type Limits Name
+  Through: 04/30,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  1.0,                     !- Field 4
+  Through: 09/30,          !- Field 5
+  For: AllDays,            !- Field 6
+  Until: 24:00,            !- Field 7
+  0.5,                     !- Field 8
+  Through: 12/31,          !- Field 9
+  For: AllDays,            !- Field 10
+  Until: 24:00,            !- Field 11
+  1.0;                     !- Field 12
+
+Schedule:Compact,
+  PlantOnSched,            !- Name
+  On/Off,                  !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  1.0;                     !- Field 4
+
+Schedule:Compact,
+  BLDG_ELEVATORS,            !- Name
+  Fraction,                !- ScheduleType
+  Through: 12/31,          !- Complex Field #1
+  For: AllDays,            !- Complex Field #2
+  Until: 04:00,            !- Complex Field #3
+  0.05,                     !- Complex Field #4
+  Until: 05:00,            !- Complex Field #5
+  0.10,                    !- Complex Field #6
+  Until: 06:00,            !- Complex Field #7
+  0.20,                    !- Complex Field #8
+  Until: 07:00,            !- Complex Field #9
+  0.40,                    !- Complex Field #10
+  Until: 09:00,            !- Complex Field #11
+  0.50,                    !- Complex Field #12
+  Until: 10:00,            !- Complex Field #13
+  0.35,                    !- Complex Field #14
+  Until: 16:00,            !- Complex Field #15
+  0.15,                    !- Complex Field #16
+  Until: 17:00,            !- Complex Field #17
+  0.35,                    !- Complex Field #18
+  Until: 19:00,            !- Complex Field #19
+  0.50,                    !- Complex Field #20
+  Until: 21:00,            !- Complex Field #21
+  0.40,                    !- Complex Field #22
+  Until: 22:00,            !- Complex Field #23
+  0.30,                    !- Complex Field #24
+  Until: 23:00,            !- Complex Field #25
+  0.20,                    !- Complex Field #26
+  Until: 24:00,            !- Complex Field #27
+  0.10;                    !- Complex Field #28
+
+Schedule:Compact,
+  SHADING_SCH,             !- Name
+  Any Number,              !- Schedule Type Limits Name
+  Through: 12/31,          !- Field 1
+  For: AllDays,            !- Field 2
+  Until: 24:00,            !- Field 3
+  0.0;                     !- Field 4
+
+##enddef
