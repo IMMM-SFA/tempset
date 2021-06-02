@@ -25,7 +25,7 @@ If no error is returned then you are ready to go!
 
 ## Functionality
 
-There are two functionalities provided in this repo:
+There are three functionalities provided in this repo:
 
 (i) **`batch_process_idf()`**: generating a distribution of temperature setpont schedules, with each schedule written to
 a separate IDF:
@@ -55,7 +55,7 @@ our local directory. Then run `make all`.
 
 ```python
 gz_dir = '<your desred directory containing e+ simulation files ending in .csv.gz>'
-summary_file = '<full path and filename to summary csv file>'
+summary_file = '<full path and filename to summary csv file that is to be generated>'
 tempset.aggregate_data(gz_dir=gz_dir,
                        summary_file=summary_file)
 
