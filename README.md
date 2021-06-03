@@ -25,9 +25,9 @@ If no error is returned then you are ready to go!
 
 ## Functionality
 
-There are two functionalities provided in this repo:
+There are three main functions provided in this package:
 
-(i) **`batch_process_idf()`**: generating a distribution of temperature setpont schedules, with each schedule written to
+1. **`batch_process_idf()`**: generating a distribution of temperature setpont schedules, with each schedule written to
 a separate IDF:
 
 ```python
@@ -47,21 +47,31 @@ tempset.batch_process_idf(eplus_config=eplus_file,
                           idf_file=None)
 ```
 
-After the IDFs are generated, you can run E+ simulations to get the outputs. `Makefile` to run the simulations is
-provided here. The expected outputs are in `.csv.gz`. Edit the `DIR_INPUT` and `DIR_OUTPUT` in the `Makefile` to reflect
-our local directory. Then run `make all`.
+2. **`aggregate_data()`**: aggregating EnergyPlus outputs at an hourly/sub-hourly resolution per day.
 
-(ii) **`aggregate_data()`**: aggregating EnergyPlus outputs at an hourly/sub-hourly resolution per day
+    After the IDFs are generated, you can run E+ simulations to get the outputs. `Makefile` to run the simulations is provided here. `tempset` expects the outputs in a `.csv.gz` format. These can be created from EnergyPlus outputs by the `Makefile` provided in this repository after changing the `DIR_INPUT` and `DIR_OUTPUT` in the to reflect your local directory. Then run `make all` to compile the files.
+
+    For user convenience, we provide a preprocessed subset of these outputs that you can retrieve like the following:
+
+```python 
+import tempset
+
+my_local_dir = '<directory where you want the data to be downloaded and unpacked>'
+
+tempset.get_package_data(my_local_dir)
+```
+
+Then you can run the following function to build the `summary.csv` file:
 
 ```python
-gz_dir = '<your desred directory containing e+ simulation files ending in .csv.gz>'
-summary_file = '<full path and filename to summary csv file>'
-tempset.aggregate_data(gz_dir=gz_dir,
-                       summary_file=summary_file)
+gz_dir = '<directory where you downloaded and unpacked the EnergyPlus data to>'
+summary_file = '<full path and filename to summary CSV file that you will write>'
+
+tempset.aggregate_data(gz_dir=gz_dir, summary_file=summary_file)
 
 ```
 
-(iii) **`gen_results()`**: analyzing and plotting probability distributions based on EnergyPlus (E+) simulations using
+3. **`gen_results()`**: analyzing and plotting probability distributions based on EnergyPlus (E+) simulations using
 temperature setpoint schedules specified in (i):
 
 ```python
