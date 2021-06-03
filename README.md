@@ -24,7 +24,6 @@ import tempset
 If no error is returned then you are ready to go!
 
 ## Functionality
-
 There are three main functions provided in this package:
 
 1. **`batch_process_idf()`**: generating a distribution of temperature setpont schedules, with each schedule written to
@@ -68,7 +67,6 @@ gz_dir = '<directory where you downloaded and unpacked the EnergyPlus data to>'
 summary_file = '<full path and filename to summary CSV file that you will write>'
 
 tempset.aggregate_data(gz_dir=gz_dir, summary_file=summary_file)
-
 ```
 
 3. **`gen_results()`**: analyzing and plotting probability distributions based on EnergyPlus (E+) simulations using
