@@ -1,0 +1,173 @@
+Marhc 10, 2010:
+ (1)  due to the issue of WMO724673 (Leadville Lake Co at CO), decide to remove it from the epw eather list for simulation
+ (2)  due to the issue of WMO725847 (Lake Tahoe at CA), decide to use WMO725846. WMO725846 passed the simulation test.
+ (3)  files modified for this two year experiments:
+      (a) template: has included the epw weather file names of this experiement.
+      (b) HPBLocationDependSets.imf: has included the (i) site location info, (ii) clg and htg design day objects, (iii) mainwater T and (iv) groundwater T profile for the locations which were not in the file.
+      
+
+March 6th, 2017
+
+this note is about how to modify the "HBPLocationDependSets.imf file" in order to simulate 724673 (Lake Co, CO), 725847 (Lake Tahoe, CA) and 726985 (Portland Troutdale)
+
+----------------------------------------------------------------------------------------------------
+For the two year experiment, we have 31 unique weather station used in the simulation.
+Three of them do not have dd information in the HPBLocationDependSets.imf file.
+The three location are WMP 724673 (Lake Co., CO), 725847 (Lake Tahoe, CA), 726985 (Portland, Troutdale)
+The ddy file associated with the TMY3 epw files for these three locations are also not complete.
+So the way to create the dd information for these three locations are:
+(1) get the site location info from the ddy file associated with the TMY3 weater epw file /phome/weather/EnergyPlus/tmy3.new/all
+(2) get the barometric pressure from the stat files associated with the TMY3 weather epw file,
+(3) download the Chapter 14 of ASHRAE fundamental Handboob table, there is one page for each of the station.
+    The heating DB at 99.6% and the Cooling DB/MCWB at 0.4% are used for relevant fields of the SizingPeriod:DesignDay objects.
+(4) The stat2idf_mod utlity program is applied on the stat files to get the following temperatures for the Site:WaterMainsTemperature objects.
+    e.g.,
+    6.54,                    !- Annual Average Outdoor Air Temperature {C}
+    19.9;                    !- Maximum Difference In Monthly Average Outdoor Air Temperatures {deltaC}
+(5) still missing the ground temperature profiles for these three weather locations.
+    slab temperature 
+----------------------------------------------------------------------------------------------------
+1. design day information
+
+When using the 31 weather station to generate xml and idf files, a few of them leads to E+ run failure (WMO: 724673 (Lake CO), 726985 (Portland, Troutdale), 725847(Lake Tahoa)).
+
+The issue was only found when the eneryplus run was failed that there is no design day information specified in the idf files.
+
+The design day information was passing through the HPBLocationDesignSets.imf file.
+
+For each WMO station, the design day information was explicitly specified.
+
+A spot check on the available design day information (WMO 724060 at Baltimore) found that the design day information seems like were taken from the ddy file associated with the TMY3 epw file distribution.
+
+Beyond Compare the macro file "HPBLocationDependSets.imf" with the ddy file at WMO 724606 at Baltimore and found that a few chanhes is made instead of direct copy and paster of the ddy at 99.6% to the imf file:
+(1) 99.6% for heating ( ! Baltimore Blt Washngtn IntL_MD_USA Annual Heating 99.6%, MaxDB=-10.6°C) is used!!!!
+	(a) ,                        !- Dry-Bulb Temperature Range Modifier Type
+	
+(2)  0.4% for cooling (! Baltimore Blt Washngtn IntL_MD_USA Annual Cooling (DB=>MWB) .4%, MaxDB=34.4°C MWB=23.9°C) is used!!!!
+	(a)  ,                        !- Dry-Bulb Temperature Range Modifier Type 					(used "" instead of "DefaultMultipliers")
+	(b)  ASHRAEClearSky,          !- Solar Model Indicator								(used "ASHRAEClearSky" instead of "ASHRAETau")
+	(c) ,                        !- ASHRAE Clear Sky Optical Depth for Beam Irradiance (taub) {dimensionless}	(DEFAULT EMPTY IS USED)
+	(d) ,                        !- ASHRAE Clear Sky Optical Depth for Diffuse Irradiance (taud) {dimensionless}	(DEFAULT EMPTY IS USED)
+	(5) 1.00;                    !- Sky Clearness									(THIS IS AN ADDITIONAL LINE)
+
+Atlanta WMO 722190 (compare three pieces of information (a) table in ASHRAe handbook, table 1 of chapter 14), (b) the macro file HPBLocationDependSets.imf and (c) the ddy file coming with TMY3 data.
+(1) data identical (except barometric pressure) between HPBLocationDependSets.imf" and "USA_GA_Atlanta-Hartsfield.Jackson.Intl.AP.722190_TMY3.ddy"
+(2) The ASHRAE handbook Chapter14 table 1 does not have data needed in the ddy file becaiuse most of the data in table 1 are mean coincident dazta NOT maximum data.  But it seems like the ddy file data are very close to the data in tbale 1.
+    data identical (except Max dry-bulb T (C) 
+
+
+Unfortunately, the ddy files of the above mentioned three WMOs coming with the tmy3 epw located in the \phome\waether\energyplus\tmy3.new\all\ folder are empty.
+So manually crated the ddy information portion for the three WMOs inserted into the HPBLocationDependSets.imf files based on data in Table 1 of Chapter 14 of ASHRAE Handbook.
+
+
+
+
+
+Apply stat2idf_modify to the epw file to get the Site:WaterMainsTemperature of the three WMOs:
+724673 (Lake Co, CO):              2.675 | 20.9
+725847 (Lake Tahoe, CA):           6.54  | 19.9
+726985 (Portland, Trooutdate_OR): 12.12  | 14.9
+
+********************************************************* 724673 *********************************************************
+Note: the ddy files are not complete empty at least it contains the site location information:
+ ! The following Location and Design Day data are produced as possible from the indicated data source.
+ ! Wind Speeds follow the indicated design conditions rather than traditional values (6.7 m/s heating, 3.35 m/s cooling)
+ ! No special attempts at re-creating or determining missing data parts (e.g. Wind speed or direction)
+ ! are done.  Therefore, you should look at the data and fill in any incorrect values as you desire.
+  
+ Site:Location,
+  Leadville Lake Co_CO_USA Design_Conditions,     !- Location Name
+      39.22,     !- Latitude {N+ S-}
+    -106.32,     !- Longitude {W- E+}
+      -7.00,     !- Time Zone Relative to GMT {GMT+/-}
+    3026.00;     !- Elevation {m}
+
+
+ ! No Design Conditions found for this Location
+
+********************************************************* 725847 *********************************************************
+ ! The following Location and Design Day data are produced as possible from the indicated data source.
+ ! Wind Speeds follow the indicated design conditions rather than traditional values (6.7 m/s heating, 3.35 m/s cooling)
+ ! No special attempts at re-creating or determining missing data parts (e.g. Wind speed or direction)
+ ! are done.  Therefore, you should look at the data and fill in any incorrect values as you desire.
+  
+ Site:Location,
+  South Lake Tahoe_CA_USA Design_Conditions,     !- Location Name
+      38.90,     !- Latitude {N+ S-}
+    -120.00,     !- Longitude {W- E+}
+      -8.00,     !- Time Zone Relative to GMT {GMT+/-}
+    1909.00;     !- Elevation {m}
+
+
+ ! No Design Conditions found for this Location
+
+********************************************************* 726985 *********************************************************
+ ! The following Location and Design Day data are produced as possible from the indicated data source.
+ ! Wind Speeds follow the indicated design conditions rather than traditional values (6.7 m/s heating, 3.35 m/s cooling)
+ ! No special attempts at re-creating or determining missing data parts (e.g. Wind speed or direction)
+ ! are done.  Therefore, you should look at the data and fill in any incorrect values as you desire.
+  
+ Site:Location,
+  Portland Troutdale_OR_USA Design_Conditions,     !- Location Name
+      45.55,     !- Latitude {N+ S-}
+    -122.40,     !- Longitude {W- E+}
+      -8.00,     !- Time Zone Relative to GMT {GMT+/-}
+      11.00;     !- Elevation {m}
+
+
+ ! No Design Conditions found for this Location
+
+
+
+The barometric [pressure in the ASHRAE fundamemntal handbook chapter 14 table is rounded off.  The pressure in the TMY3.stat file are extracted to be used in the ddy information block.
+
+
+********************************************************* 724673 *********************************************************
+ -EnergyPlus Weather Converter V7.2.0.007
+ Statistics for USA_CO_Leadville-Lake.County.AP.724673_TMY3
+ Location -- Leadville Lake Co CO USA  
+      {N 39° 13'} {W 106° 19'} {GMT -7.0 Hours}
+ Elevation --  3026m above sea level
+ Standard Pressure at Elevation --  69877Pa
+ Data Source -- TMY3
+
+********************************************************* 725847 South.Lake.Tahoe *********************************************************
+ -EnergyPlus Weather Converter V7.2.0.007
+ Statistics for USA_CA_South.Lake.Tahoe-Lake.Tahoe.AP.725847_TMY3
+ Location -- South Lake Tahoe CA USA  
+      {N 38° 54'} {W 120°  0'} {GMT -8.0 Hours}
+ Elevation --  1909m above sea level
+ Standard Pressure at Elevation --  80397Pa
+ Data Source -- TMY3
+ 
+ 
+********************************************************* 726985 Portland Troutdale OR USA *********************************************************
+ -EnergyPlus Weather Converter V7.2.0.007
+ Statistics for USA_OR_Portland-Troutdale.AP.726985_TMY3
+ Location -- Portland Troutdale OR USA  
+      {N 45° 32'} {W 122° 24'} {GMT -8.0 Hours}
+ Elevation --    11m above sea level
+ Standard Pressure at Elevation -- 101193Pa
+ 
+ 
+
+
+----------------------------------------------------------------------------------------------------
+2. WaterMainsTemperature
+	apply stat2idf to the stat file of the TMY3 weather at the locations
+	
+********************************************************* 724673 *********************************************************
+2.675 | 20.9
+
+********************************************************* 725847 South.Lake.Tahoe *********************************************************
+6.54  | 19.9
+
+********************************************************* 726985 Portland Troutdale OR USA *********************************************************
+12.12 | 14.9
+
+
+----------------------------------------------------------------------------------------------------
+3. Site:GroundTemperature:BuildingSurface
+
+
+

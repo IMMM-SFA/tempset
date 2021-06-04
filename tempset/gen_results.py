@@ -351,6 +351,8 @@ class results(Logger):
 def remove_holidays(df):
     """This function is to remove all the weekends from the histogram"""
 
+    df = df.copy()
+
     # check weekends"
     dayofweek = (
         df.index.dayofweek.values

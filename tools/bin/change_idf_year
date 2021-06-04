@@ -1,0 +1,72 @@
+#!/bin/env perl
+use strict;
+
+# add two modificationa:
+# 1, Change the timesteps from default 6 to 2 in order to outtput 30 minutes output using timesteps
+# 2: change the hourly frequency to timestep which is half hour
+
+# Simple script to read in an IDF file and modify it to match a particular
+# year.  Most E+ runs are done on a TMY1/2/3 year, where the actual year
+# and days of week don't really matter.  But they matter when running a
+# particular year.
+
+use Date::Calc qw/Day_of_Week/;
+use Getopt::Std;    # Single-letter arguments...
+
+my %OPT;
+getopts('y:', \%OPT);
+die "You must give a year with the -y option" unless $OPT{y};
+
+
+# There are two bits of data we'll be replacing:  the year and the day-of-week (dow)
+# of January 1 of that year...
+my $year = $OPT{y};
+
+my @dayname = ('', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+my $dow = Day_of_Week($year, 1, 1);	# Integer: 1=Monday, 2=Tuesday, ... 7=Sunday
+my $dayofweek = $dayname[$dow];
+
+my $timestep = 2;
+my $reporting_freq = 'TimeStep';
+
+# Now, read the file and do the substitutions...
+my $line;
+while ( defined($line = <STDIN>) ) {
+
+	if ($line =~ /^\s*\d+\s*[;,]\s*!.*Number of Timesteps per Hour/) {
+		print STDERR "Found a timestep field\n";
+    $line =~ s/^(\s*)(\d+)(\s*[;,]\s*!-?\s*)(Number of Timesteps per Hour.*)$/$1$timestep$3$4/;
+    
+	} elsif ($line =~ /^\s*[a-zA-Z]+,.*Day of Week for Start Day/) {
+		print STDERR "Found a DOW\n";
+		$line =~ s/^(\s*)([a-zA-Z]+)(,\s*![\s-]*)(Day of Week for Start Day.*)$/$1$dayofweek$3$4/;
+    
+	} elsif ($line =~ /^\s*\d+\s*[;,]\s*!.*Start Year/) {
+		print STDERR "Found a year\n";
+		$line =~ s/^(\s*)(\d+)(\s*[;,]\s*!-?\s*)(Start Year.*)$/$1$year$3$4/;
+    
+	} elsif ($line =~ /^\s*[a-zA-Z]+[;,].*Reporting Frequency/) {
+		print STDERR "Found a reporting frequency field\n";
+    		$line =~ s/^(\s*)([a-zA-Z]+)([;,]\s*![\s-]*)(Reporting Frequency.*)$/$1$reporting_freq$3$4/;    
+	}
+
+	print $line;
+}
+
+exit;
+
+# RunPeriod,
+#   ,  !- Name
+#   1,  !- Begin Month
+#   1,  !- Begin Day of Month
+#   12,  !- End Month
+#   31,  !- End Day of Month
+#   Friday,  !- Day of Week for Start Day
+#   No,  !- Use Weather File Holidays and Special Days
+#   No,  !- Use Weather File Daylight Saving Period
+#   No,  !- Apply Weekend Holiday Rule
+#   Yes,  !- Use Weather File Rain Indicators
+#   Yes,  !- Use Weather File Snow Indicators
+#   1.0000,  !- Number of Times Runperiod to be Done
+#   Yes,  !- Increment Day of Week on Repeat
+#   2010;  !- Start Year
