@@ -1,0 +1,26 @@
+{
+	"schedule_name": "HTGSETP_SCH_NO_OPTIMUM",
+	"schedule_type": "HTGSETP",
+	"days_in_week": ["WeekDays"],
+	"t_pthresh": 4,
+	"max_ramphour": 3, 
+	"rampRes": 15,
+	"gamma_thresh": 0.5,
+	"heatingSETP_op": {
+		"min": 17.0,
+		"max": 23.5,
+		"mean": 21.0		
+	},
+	
+	"heatingSETP_setback": {
+		"min": 14.0	
+	},
+	
+	"p_tp": 0.01,
+	"p_threshRamp": 0.01,
+	"setback_p": 0.772,
+	
+	"plot_base_schedule": false,
+	"plot_mod_schedule": false
+		
+}

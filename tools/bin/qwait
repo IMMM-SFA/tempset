@@ -1,0 +1,46 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+# Script to check whether it's running under a SLURM job allocation, and if
+# so, run 'srun1', and if not, run 'shrun'.  This allows us to use a single
+# command in our Makefiles that will do the right thing depending on whether
+# or not we've got a SLURM resource allocation.
+#
+# Background:
+#
+# 	*	srun1 is a script that runs SLURM's srun command with arguments
+# 		appropriate for a single-processor job running under a resource
+# 		allocation.
+#
+# 	*	shrun is a script that runs srun with arguments appropriate for
+# 		a single-processor (or more, if you've given the -c argument) job
+# 		running in the shared partition (i.e., picking up CPU crumbs).
+
+# Setup...note that I'm not using full pathnames for the executables because
+# I want this to work in a (currently uncertain) AWS environment as well as
+# on the PIC...
+my $srun1 = 'srun1'; 
+my $shrun = 'shrun';
+
+# If we're running from a login shell on the head node OR running from a
+# shell that is running on the 'shared' partition, we want to use 'shrun'
+# to run commands; otherwise, we use 'srun1'...
+my $have_resource_allocation = 0;
+if (defined $ENV{SLURM_JOB_PARTITION}) {
+	if ($ENV{SLURM_JOB_PARTITION} eq 'slurm' || $ENV{SLURM_JOB_PARTITION} eq 'smp7') {
+		$have_resource_allocation = 1;
+	} else {
+
+		# Should this throw an error instead of a warning?
+		warn "Not sure this works right in the '$ENV{SLURM_JOB_PARTITION}' partition";
+		$have_resource_allocation = 1;
+	}
+}
+
+# Easy peasy...
+if ($have_resource_allocation) {
+	exec($srun1, '-p', $ENV{SLURM_JOB_PARTITION}, @ARGV);
+} else {
+	exec($shrun, @ARGV);
+}

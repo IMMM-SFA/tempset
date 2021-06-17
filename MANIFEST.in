@@ -1,0 +1,3 @@
+include tempset/data/*
+include tempset/data/eplus/*
+include tempset/data/idf/*

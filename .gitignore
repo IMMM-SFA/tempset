@@ -1,3 +1,12 @@
+example..py
+tempset.egg-info/
+dist
+build
+example.py
+
+# pyenv
+.python-version
+
 # data
 batch_cbecs478b/
 eplusout.eio/
@@ -47,7 +56,7 @@ eplustbl.csv/
 in.epw/
 output.txt/
 prototype_htg/
-tempset/
+#tempset/
 # project
 *.pyc
 build/
@@ -94,7 +103,7 @@ $RECYCLE.BIN/
 *.msp
 # Windows shortcuts
 *.lnk
-
+./test.py
 
 
 
